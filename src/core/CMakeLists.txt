@@ -80,6 +80,7 @@ install(TARGETS mavsdk
 
 install(FILES
     connection_result.h
+    deprecated.h
     system.h
     mavsdk.h
     plugin_base.h
