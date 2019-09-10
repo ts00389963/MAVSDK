@@ -133,6 +133,13 @@ public:
     add_serial_connection(const std::string& dev_path, int baudrate = DEFAULT_SERIAL_BAUDRATE);
 
     /**
+     * @brief Get a vector of systems which have been discovered or set-up.
+     *
+     * @return The vector of systems which are available.
+     */
+    std::vector<std::weak_ptr<System>> systems() const;
+
+    /**
      * @brief Possible configurations.
      */
     enum class Configuration {

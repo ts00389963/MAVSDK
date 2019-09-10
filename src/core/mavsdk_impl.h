@@ -30,6 +30,8 @@ public:
     ConnectionResult add_serial_connection(const std::string& dev_path, int baudrate);
     ConnectionResult setup_udp_remote(const std::string& remote_ip, int remote_port);
 
+    std::vector<std::weak_ptr<System>> systems() const;
+
     void set_configuration(Mavsdk::Configuration configuration);
 
     std::vector<uint64_t> get_system_uuids() const;
@@ -53,8 +55,6 @@ private:
     void add_connection(std::shared_ptr<Connection>);
     void make_system_with_component(uint8_t system_id, uint8_t component_id);
     bool does_system_exist(uint8_t system_id);
-
-    using system_entry_t = std::pair<uint8_t, std::shared_ptr<System>>;
 
     std::mutex _connections_mutex;
     std::vector<std::shared_ptr<Connection>> _connections;
