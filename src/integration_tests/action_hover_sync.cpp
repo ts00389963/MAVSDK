@@ -38,14 +38,19 @@ void takeoff_and_hover_at_altitude(float altitude_m)
     ASSERT_TRUE(poll_condition_with_timeout(
         [&dc]() { return dc.is_connected(); }, std::chrono::seconds(10)));
 
-    System& system = dc.system();
-    auto telemetry = std::make_shared<Telemetry>(system);
+    auto systems = dc.systems();
+
+    ASSERT_EQ(systems.size(), 1);
+
+    auto system = systems.at(0);
+
+    auto telemetry = std::make_shared<Telemetry>(*system.lock());
 
     LogInfo() << "Waiting for system to be ready";
     ASSERT_TRUE(poll_condition_with_timeout(
         [&telemetry]() { return telemetry->health_all_ok(); }, std::chrono::seconds(10)));
 
-    auto action = std::make_shared<Action>(system);
+    auto action = std::make_shared<Action>(*system.lock());
     Action::Result action_ret = action->arm();
     EXPECT_EQ(action_ret, Action::Result::SUCCESS);
 
