@@ -30,7 +30,7 @@ public:
     ConnectionResult add_serial_connection(const std::string& dev_path, int baudrate);
     ConnectionResult setup_udp_remote(const std::string& remote_ip, int remote_port);
 
-    std::vector<std::weak_ptr<System>> systems() const;
+    std::vector<std::shared_ptr<System>> systems() const;
 
     void set_configuration(Mavsdk::Configuration configuration);
 

@@ -44,7 +44,7 @@ ConnectionResult Mavsdk::add_serial_connection(const std::string& dev_path, cons
     return _impl->add_serial_connection(dev_path, baudrate);
 }
 
-std::vector<std::weak_ptr<System>> Mavsdk::systems() const
+std::vector<std::shared_ptr<System>> Mavsdk::systems() const
 {
     return _impl->systems();
 }
