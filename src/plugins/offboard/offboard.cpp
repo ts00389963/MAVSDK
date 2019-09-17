@@ -8,6 +8,8 @@ Offboard::Offboard(System& system) : PluginBase(), _impl{new OffboardImpl(system
 
 Offboard::~Offboard() {}
 
+Offboard::Offboard(const Offboard& other) : PluginBase(), _impl(new OffboardImpl(*other._impl)) {}
+
 Offboard::Result Offboard::start()
 {
     return _impl->start();

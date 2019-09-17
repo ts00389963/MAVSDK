@@ -253,9 +253,9 @@ public:
     void set_actuator_control(const ActuatorControl actuator_control);
 
     /**
-     * @brief Copy constructor (object is not copyable).
+     * @brief Copy constructor.
      */
-    Offboard(const Offboard&) = delete;
+    Offboard(const Offboard& other);
     /**
      * @brief Equality operator (object is not copyable).
      */
