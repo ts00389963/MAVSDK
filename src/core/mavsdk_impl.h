@@ -56,14 +56,14 @@ private:
     void make_system_with_component(uint8_t system_id, uint8_t component_id);
     bool does_system_exist(uint8_t system_id);
 
-    std::mutex _connections_mutex;
-    std::vector<std::shared_ptr<Connection>> _connections;
+    std::mutex _connections_mutex{};
+    std::vector<std::shared_ptr<Connection>> _connections{};
 
-    mutable std::recursive_mutex _systems_mutex;
-    std::map<uint8_t, std::shared_ptr<System>> _systems;
+    mutable std::recursive_mutex _systems_mutex{};
+    std::map<uint8_t, std::shared_ptr<System>> _systems{};
 
-    Mavsdk::event_callback_t _on_discover_callback;
-    Mavsdk::event_callback_t _on_timeout_callback;
+    Mavsdk::event_callback_t _on_discover_callback{nullptr};
+    Mavsdk::event_callback_t _on_timeout_callback{nullptr};
 
     std::atomic<Mavsdk::Configuration> _configuration{Mavsdk::Configuration::GroundStation};
     bool _is_single_system{false};
