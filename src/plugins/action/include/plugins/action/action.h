@@ -37,6 +37,8 @@ public:
      */
     explicit Action(System& system);
 
+    explicit Action(std::shared_ptr<System> system);
+
     /**
      * @brief Destructor (internal use only).
      */
