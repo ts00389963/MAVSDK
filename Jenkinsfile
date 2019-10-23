@@ -21,11 +21,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
             sh 'make -Cbuild/debug install'
             sh 'build/debug/src/unit_tests_runner'
             sh 'build/debug/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -51,11 +51,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
             sh 'make -Cbuild/release install'
             sh 'build/release/src/unit_tests_runner'
             sh 'build/release/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -81,11 +81,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
             sh 'make -Cbuild/debug install'
             sh 'build/debug/src/unit_tests_runner'
             sh 'build/debug/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -111,11 +111,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
             sh 'make -Cbuild/release install'
             sh 'build/release/src/unit_tests_runner'
             sh 'build/release/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -141,7 +141,7 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
             sh 'make -Cbuild/debug install'
             sh 'cp -r /home/user/Firmware `pwd`/Firmware'
             sh 'HOME=`pwd` PX4_SIM_SPEED_FACTOR=10 AUTOSTART_SITL=1 PX4_FIRMWARE_DIR=`pwd`/Firmware HEADLESS=1 build/debug/src/integration_tests/integration_tests_runner --gtest_filter="SitlTest.*"'
@@ -169,11 +169,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
             sh 'make -Cbuild/debug install'
             sh 'build/debug/src/unit_tests_runner'
             sh 'build/debug/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -199,11 +199,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
             sh 'make -Cbuild/release install'
             sh 'build/release/src/unit_tests_runner'
             sh 'build/release/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -229,11 +229,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
             sh 'make -Cbuild/debug install'
             sh 'build/debug/src/unit_tests_runner'
             sh 'build/debug/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -259,11 +259,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
             sh 'make -Cbuild/release install'
             sh 'build/release/src/unit_tests_runner'
             sh 'build/release/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -289,11 +289,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/debug -H.'
             sh 'make -Cbuild/debug install'
             sh 'build/debug/src/unit_tests_runner'
             sh 'build/debug/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Debug -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/debug/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {
@@ -319,11 +319,11 @@ pipeline {
             sh 'git submodule sync --recursive'
             sh 'git submodule update --init --recursive --force'
             sh 'ccache -z'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BACKEND=ON -DBUILD_SHARED_LIBS=OFF -DWERROR=ON -DCMAKE_INSTALL_PREFIX=install -DENABLE_MAVLINK_PASSTHROUGH=ON -Bbuild/release -H.'
             sh 'make -Cbuild/release install'
             sh 'build/release/src/unit_tests_runner'
             sh 'build/release/src/backend/test/unit_tests_backend'
-            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
+            sh 'cmake -DCMAKE_BUILD_TYPE=Release -DWERROR=ON -DCMAKE_PREFIX_PATH="${WORKSPACE}/install;${WORKSPACE}/build/release/third_party/install" -B./example/build -Hexample'
             sh 'make -Cexample/build'
           }
           post {

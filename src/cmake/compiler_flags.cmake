@@ -20,7 +20,10 @@ else()
         set(warnings "-Wall -Wextra -Wshadow -Wno-strict-aliasing -Wold-style-cast -Wdouble-promotion")
     else()
         add_definitions(-fno-exceptions)
-        set(warnings "-Wall -Wextra -Werror -Wshadow -Wno-strict-aliasing -Wold-style-cast -Wdouble-promotion -Wformat=2 -Weffc++")
+        set(warnings "-Wall -Wextra -Wshadow -Wno-strict-aliasing -Wold-style-cast -Wdouble-promotion -Wformat=2 -Weffc++")
+        if (WERROR "ON")
+            set(warnings "${warnings} -Werror")
+        endif()
     endif()
 
 
