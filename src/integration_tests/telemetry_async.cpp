@@ -26,6 +26,7 @@ static void print_ground_speed_ned(Telemetry::GroundSpeedNED ground_speed_ned);
 static void print_imu_reading_ned(Telemetry::IMUReadingNED imu_reading_ned);
 static void print_gps_info(Telemetry::GPSInfo gps_info);
 static void print_battery(Telemetry::Battery battery);
+static void print_battery_current(Telemetry::Battery_Current battery_current);
 static void print_rc_status(Telemetry::RCStatus rc_status);
 static void print_position_velocity_ned(Telemetry::PositionVelocityNED position_velocity_ned);
 static void print_unix_epoch_time_us(uint64_t time_us);
@@ -48,6 +49,7 @@ static bool _received_ground_speed = false;
 static bool _received_imu_reading_ned = false;
 static bool _received_gps_info = false;
 static bool _received_battery = false;
+static bool _received_battery_current = false;
 static bool _received_rc_status = false;
 static bool _received_position_velocity_ned = false;
 static bool _received_actuator_control_target = false;
@@ -100,6 +102,9 @@ TEST_F(SitlTest, TelemetryAsync)
 
     telemetry->set_rate_battery_async(10.0, std::bind(&receive_result, _1));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    
+    telemetry->set_rate_battery_current_async(10.0, std::bind(&receive_result, _1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     telemetry->set_rate_actuator_control_target_async(10.0, std::bind(&receive_result, _1));
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -132,6 +137,8 @@ TEST_F(SitlTest, TelemetryAsync)
 
     telemetry->battery_async(std::bind(&print_battery, _1));
 
+    telemetry->battery_current_async(std::bind(&print_battery_current, _1));
+
     telemetry->rc_status_async(std::bind(&print_rc_status, _1));
 
     telemetry->position_velocity_ned_async(std::bind(&print_position_velocity_ned, _1));
@@ -160,6 +167,7 @@ TEST_F(SitlTest, TelemetryAsync)
     EXPECT_TRUE(_received_imu_reading_ned);
     EXPECT_TRUE(_received_gps_info);
     EXPECT_TRUE(_received_battery);
+    EXPECT_TRUE(_received_battery_current);
     // EXPECT_TRUE(_received_rc_status); // No RC is sent in SITL.
     EXPECT_TRUE(_received_position_velocity_ned);
     // EXPECT_TRUE(_received_actuator_control_target); TODO check is that sent in SITL.
@@ -286,6 +294,13 @@ void print_battery(Telemetry::Battery battery)
               << "remaining: " << int(battery.remaining_percent * 1e2f) << " %" << std::endl;
 
     _received_battery = true;
+}
+
+void print_battery_current(Telemetry::Battery_Current battery_current)
+{
+    std::cout << "Battery_Current: " << battery_current.current_A << " A" << std::endl;
+
+    _received_battery_current = true;
 }
 
 void print_rc_status(Telemetry::RCStatus rc_status)

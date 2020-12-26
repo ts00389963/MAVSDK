@@ -60,6 +60,17 @@ Telemetry::Result Telemetry::set_rate_battery(double rate_hz)
     return _impl->set_rate_battery(rate_hz);
 }
 
+Telemetry::Result Telemetry::set_rate_battery_current(double rate_hz)
+{
+    return _impl->set_rate_battery_current(rate_hz);
+}
+
+Telemetry::Result Telemetry::set_rate_solar_power(double rate_hz)
+{
+    return _impl->set_rate_solar_power(rate_hz);
+}
+
+
 Telemetry::Result Telemetry::set_rate_rc_status(double rate_hz)
 {
     return _impl->set_rate_rc_status(rate_hz);
@@ -123,6 +134,16 @@ void Telemetry::set_rate_gps_info_async(double rate_hz, result_callback_t callba
 void Telemetry::set_rate_battery_async(double rate_hz, result_callback_t callback)
 {
     _impl->set_rate_battery_async(rate_hz, callback);
+}
+
+void Telemetry::set_rate_battery_current_async(double rate_hz, result_callback_t callback)
+{
+    _impl->set_rate_battery_current_async(rate_hz, callback);
+}
+
+void Telemetry::set_rate_solar_power_async(double rate_hz, result_callback_t callback)
+{
+    _impl->set_rate_solar_power_async(rate_hz, callback);
 }
 
 void Telemetry::set_rate_rc_status_async(double rate_hz, result_callback_t callback)
@@ -247,6 +268,16 @@ Telemetry::Battery Telemetry::battery() const
     return _impl->get_battery();
 }
 
+Telemetry::Battery_Current Telemetry::battery_current() const
+{
+    return _impl->get_battery_current();
+}
+
+Telemetry::Solar_Power Telemetry::solar_power() const
+{
+    return _impl->get_solar_power();
+}
+
 Telemetry::FlightMode Telemetry::flight_mode() const
 {
     return _impl->get_flight_mode();
@@ -351,6 +382,16 @@ void Telemetry::gps_info_async(gps_info_callback_t callback)
 void Telemetry::battery_async(battery_callback_t callback)
 {
     return _impl->battery_async(callback);
+}
+
+void Telemetry::battery_current_async(battery_current_callback_t callback)
+{
+    return _impl->battery_current_async(callback);
+}
+
+void Telemetry::solar_power_async(solar_power_callback_t callback)
+{
+    return _impl->solar_power_async(callback);
 }
 
 void Telemetry::flight_mode_async(flight_mode_callback_t callback)
@@ -599,6 +640,31 @@ std::ostream& operator<<(std::ostream& str, Telemetry::Battery const& battery)
 {
     return str << "[voltage_v: " << battery.voltage_v
                << ", remaining_percent: " << battery.remaining_percent << "]";
+}
+
+bool operator==(const Telemetry::Battery_Current& lhs, const Telemetry::Battery_Current& rhs)
+{
+    return lhs.current_A == rhs.current_A;
+}
+
+std::ostream& operator<<(std::ostream& str, Telemetry::Battery_Current const& battery_current)
+{
+    return str << "[current_A: " << battery_current.current_A << "]";
+}
+
+bool operator==(const Telemetry::Solar_Power& lhs, const Telemetry::Solar_Power& rhs)
+{
+    return lhs.voltage_in_V == rhs.voltage_in_V && lhs.current_in_A == rhs.current_in_A && lhs.power_in_W == rhs.power_in_W && lhs.voltage_out_V == rhs.voltage_out_V && lhs.current_out_A == rhs.current_out_A && lhs.power_out_W == rhs.power_out_W;
+}
+
+std::ostream& operator<<(std::ostream& str, Telemetry::Solar_Power const& solar_power)
+{
+    return str << "[voltage_in_V: " << solar_power.voltage_in_V
+               << ", current_in_A: " << solar_power.current_in_A 
+               << ", power_in_W: " << solar_power.power_in_W
+               << ", voltage_out_V: " << solar_power.voltage_out_V 
+               << ", current_out_A: " << solar_power.current_out_A 
+               << ", power_out_W: " << solar_power.power_out_W  << "]";
 }
 
 bool operator==(const Telemetry::Quaternion& lhs, const Telemetry::Quaternion& rhs)

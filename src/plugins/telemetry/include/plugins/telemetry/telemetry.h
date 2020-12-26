@@ -210,8 +210,28 @@ public:
      */
     struct Battery {
         float voltage_v; /**< @brief Voltage in volts. */
-        float remaining_percent; /**< @brief Estimated battery percentage remaining (range: 0.0
+        float current_A; /**< @brief Current in Amps. */
+        int remaining_percent; /**< @brief Estimated battery percentage remaining (range: 0.0
                                     to 1.0). */
+    };
+
+    /**
+     * @brief Battery current monitor.
+     */
+    struct Battery_Current {
+        float current_A; /**< @brief Current in Amps. */
+    };
+
+    /**
+     * @brief Solar power input monitor.
+     */
+    struct Solar_Power {
+        float voltage_in_V; /**< @brief Voltage input in Volts. */
+        float current_in_A; /**< @brief Current input in Amps. */
+        float power_in_W; /**< @brief Power input in Watts. */
+        float voltage_out_V; /**< @brief Voltage output in Volts. */
+        float current_out_A; /**< @brief Current output in Amps. */
+        float power_out_W; /**< @brief Power output in Watts. */
     };
 
     /**
@@ -429,6 +449,26 @@ public:
     Result set_rate_battery(double rate_hz);
 
     /**
+     * @brief Set rate of battery current updates (synchronous).
+     *
+     * @note To stop sending it completely, use a rate_hz of -1, for default rate use 0.
+     *
+     * @param rate_hz Rate in Hz.
+     * @return Result of request.
+     */
+    Result set_rate_battery_current(double rate_hz);
+
+    /**
+     * @brief Set rate of solar power updates (synchronous).
+     *
+     * @note To stop sending it completely, use a rate_hz of -1, for default rate use 0.
+     *
+     * @param rate_hz Rate in Hz.
+     * @return Result of request.
+     */
+    Result set_rate_solar_power(double rate_hz);
+
+    /**
      * @brief Set rate of RC status updates (synchronous).
      *
      * @note To stop sending it completely, use a rate_hz of -1, for default rate use 0.
@@ -557,6 +597,26 @@ public:
      * @param callback Callback to receive request result.
      */
     void set_rate_battery_async(double rate_hz, result_callback_t callback);
+
+    /**
+     * @brief Set rate of battery current updates (asynchronous).
+     *
+     * @note To stop sending it completely, use a rate_hz of -1, for default rate use 0.
+     *
+     * @param rate_hz Rate in Hz.
+     * @param callback Callback to receive request result.
+     */
+    void set_rate_battery_current_async(double rate_hz, result_callback_t callback);
+
+    /**
+     * @brief Set rate of solar power updates (asynchronous).
+     *
+     * @note To stop sending it completely, use a rate_hz of -1, for default rate use 0.
+     *
+     * @param rate_hz Rate in Hz.
+     * @param callback Callback to receive request result.
+     */
+    void set_rate_solar_power_async(double rate_hz, result_callback_t callback);
 
     /**
      * @brief Set rate of RC status updates (asynchronous).
@@ -709,6 +769,16 @@ public:
      * @brief Get the current battery status (synchronous).
      */
     Battery battery() const;
+
+    /**
+     * @brief Get the current battery current status (synchronous).
+     */
+    Battery_Current battery_current() const;
+
+    /**
+     * @brief Get the current solar power status (synchronous).
+     */
+    Solar_Power solar_power() const;
 
     /**
      * @brief Get the current flight mode (synchronous).
@@ -939,6 +1009,35 @@ public:
      * @param callback Function to call with updates.
      */
     void battery_async(battery_callback_t callback);
+
+    /**
+     * @brief Callback type for battery current updates.
+     *
+     * @param battery_current Battery current status.
+     */
+    typedef std::function<void(Battery_Current battery_current)> battery_current_callback_t;
+
+    /**
+     * @brief Subscribe to battery current updates (asynchronous).
+     *
+     * @param callback Function to call with updates.
+     */
+    void battery_current_async(battery_current_callback_t callback);
+
+    /**
+     * @brief Callback type for solar power updates.
+     *
+     * @param solar_power Solar power status.
+     */
+    typedef std::function<void(Solar_Power solar_power)> solar_power_callback_t;
+
+    /**
+     * @brief Subscribe to solar power updates (asynchronous).
+     *
+     * @param callback Function to call with updates.
+     */
+    void solar_power_async(solar_power_callback_t callback);
+
 
     /**
      * @brief Callback type for flight mode updates.
@@ -1196,6 +1295,35 @@ bool operator==(const Telemetry::Battery& lhs, const Telemetry::Battery& rhs);
  * @return A reference to the stream.
  */
 std::ostream& operator<<(std::ostream& str, Telemetry::Battery const& battery);
+
+/**
+ * @brief Equal operator to compare two `Telemetry::Battery_Current` objects.
+ *
+ * @return `true` if items are equal.
+ */
+bool operator==(const Telemetry::Battery_Current& lhs, const Telemetry::Battery_Current& rhs);
+
+/**
+ * @brief Stream operator to print information about a `Telemetry::Battery_Current`.
+ *
+ * @return A reference to the stream.
+ */
+std::ostream& operator<<(std::ostream& str, Telemetry::Battery_Current const& battery_current);
+
+/**
+ * @brief Equal operator to compare two `Telemetry::Solar_Power` objects.
+ *
+ * @return `true` if items are equal.
+ */
+bool operator==(const Telemetry::Solar_Power& lhs, const Telemetry::Solar_Power& rhs);
+
+/**
+ * @brief Stream operator to print information about a `Telemetry::Solar_Power`.
+ *
+ * @return A reference to the stream.
+ */
+std::ostream& operator<<(std::ostream& str, Telemetry::Solar_Power const& solar_power);
+
 
 /**
  * @brief Equal operator to compare two `Telemetry::Quaternion` objects.

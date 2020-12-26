@@ -25,6 +25,7 @@ TEST_F(SitlTest, TelemetrySync)
     EXPECT_EQ(telemetry->set_rate_ground_speed_ned(10.0), Telemetry::Result::SUCCESS);
     EXPECT_EQ(telemetry->set_rate_gps_info(10.0), Telemetry::Result::SUCCESS);
     EXPECT_EQ(telemetry->set_rate_battery(10.0), Telemetry::Result::SUCCESS);
+    EXPECT_EQ(telemetry->set_rate_battery_current(10.0), Telemetry::Result::SUCCESS);
     EXPECT_EQ(telemetry->set_rate_actuator_control_target(10.0), Telemetry::Result::SUCCESS);
 
     for (unsigned i = 0; i < 10; ++i) {
@@ -37,6 +38,7 @@ TEST_F(SitlTest, TelemetrySync)
         std::cout << "Ground speed: " << telemetry->ground_speed_ned() << std::endl;
         std::cout << "GPS Info: " << telemetry->gps_info() << std::endl;
         std::cout << "Battery: " << telemetry->battery() << std::endl;
+        std::cout << "Battery_Current: " << telemetry->battery_current() << std::endl;
         std::cout << "Actuators: " << telemetry->actuator_control_target() << std::endl;
         std::cout << "Flight mode: " << telemetry->flight_mode() << std::endl;
         std::cout << "Landed state: " << telemetry->landed_state()

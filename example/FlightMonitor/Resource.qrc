@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resource/Plane.png</file>
+        <file>Resource/Connect.png</file>
+        <file>Resource/Disconnect.png</file>
+        <file>Resource/Quit.png</file>
+    </qresource>
+</RCC>

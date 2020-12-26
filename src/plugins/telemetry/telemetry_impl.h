@@ -37,6 +37,8 @@ public:
     Telemetry::Result set_rate_imu_reading_ned(double rate_hz);
     Telemetry::Result set_rate_gps_info(double rate_hz);
     Telemetry::Result set_rate_battery(double rate_hz);
+    Telemetry::Result set_rate_battery_current(double rate_hz);
+    Telemetry::Result set_rate_solar_power(double rate_hz);
     Telemetry::Result set_rate_rc_status(double rate_hz);
     Telemetry::Result set_rate_actuator_control_target(double rate_hz);
     Telemetry::Result set_rate_actuator_output_status(double rate_hz);
@@ -52,6 +54,8 @@ public:
     void set_rate_imu_reading_ned_async(double rate_hz, Telemetry::result_callback_t callback);
     void set_rate_gps_info_async(double rate_hz, Telemetry::result_callback_t callback);
     void set_rate_battery_async(double rate_hz, Telemetry::result_callback_t callback);
+    void set_rate_battery_current_async(double rate_hz, Telemetry::result_callback_t callback);
+    void set_rate_solar_power_async(double rate_hz, Telemetry::result_callback_t callback);
     void set_rate_rc_status_async(double rate_hz, Telemetry::result_callback_t callback);
     void
     set_rate_actuator_control_target_async(double rate_hz, Telemetry::result_callback_t callback);
@@ -75,6 +79,8 @@ public:
     Telemetry::IMUReadingNED get_imu_reading_ned() const;
     Telemetry::GPSInfo get_gps_info() const;
     Telemetry::Battery get_battery() const;
+    Telemetry::Battery_Current get_battery_current() const;
+    Telemetry::Solar_Power get_solar_power() const;
     Telemetry::FlightMode get_flight_mode() const;
     Telemetry::Health get_health() const;
     bool get_health_all_ok() const;
@@ -99,6 +105,8 @@ public:
     void imu_reading_ned_async(Telemetry::imu_reading_ned_callback_t& callback);
     void gps_info_async(Telemetry::gps_info_callback_t& callback);
     void battery_async(Telemetry::battery_callback_t& callback);
+    void battery_current_async(Telemetry::battery_current_callback_t& callback);
+    void solar_power_async(Telemetry::solar_power_callback_t& callback);
     void flight_mode_async(Telemetry::flight_mode_callback_t& callback);
     void health_async(Telemetry::health_callback_t& callback);
     void health_all_ok_async(Telemetry::health_all_ok_callback_t& callback);
@@ -126,6 +134,8 @@ private:
     void set_imu_reading_ned(Telemetry::IMUReadingNED imu_reading_ned);
     void set_gps_info(Telemetry::GPSInfo gps_info);
     void set_battery(Telemetry::Battery battery);
+    void set_battery_current(Telemetry::Battery_Current battery_current);
+    void set_solar_power(Telemetry::Solar_Power solar_power);
     void set_flight_mode(Telemetry::FlightMode flight_mode);
     void set_health_local_position(bool ok);
     void set_health_global_position(bool ok);
@@ -148,6 +158,8 @@ private:
     void process_gps_raw_int(const mavlink_message_t& message);
     void process_extended_sys_state(const mavlink_message_t& message);
     void process_sys_status(const mavlink_message_t& message);
+    void process_battery_status(const mavlink_message_t& message);
+    void process_INA219(const mavlink_message_t& message);
     void process_heartbeat(const mavlink_message_t& message);
     void process_statustext(const mavlink_message_t& message);
     void process_rc_channels(const mavlink_message_t& message);
@@ -217,7 +229,13 @@ private:
     Telemetry::GPSInfo _gps_info{0, 0};
 
     mutable std::mutex _battery_mutex{};
-    Telemetry::Battery _battery{NAN, NAN};
+    Telemetry::Battery _battery{NAN, NAN, 0};
+
+    mutable std::mutex _battery_current_mutex{};
+    Telemetry::Battery_Current _battery_current{NAN};
+
+    mutable std::mutex _solar_power_mutex{};
+    Telemetry::Solar_Power _solar_power{NAN, NAN, NAN, NAN, NAN, NAN};
 
     mutable std::mutex _flight_mode_mutex{};
     Telemetry::FlightMode _flight_mode{Telemetry::FlightMode::UNKNOWN};
@@ -258,6 +276,8 @@ private:
     Telemetry::imu_reading_ned_callback_t _imu_reading_ned_subscription{nullptr};
     Telemetry::gps_info_callback_t _gps_info_subscription{nullptr};
     Telemetry::battery_callback_t _battery_subscription{nullptr};
+    Telemetry::battery_current_callback_t _battery_current_subscription{nullptr};
+    Telemetry::solar_power_callback_t _solar_power_subscription{nullptr};
     Telemetry::flight_mode_callback_t _flight_mode_subscription{nullptr};
     Telemetry::health_callback_t _health_subscription{nullptr};
     Telemetry::health_all_ok_callback_t _health_all_ok_subscription{nullptr};

@@ -61,6 +61,12 @@ void TelemetryImpl::init()
         MAVLINK_MSG_ID_SYS_STATUS, std::bind(&TelemetryImpl::process_sys_status, this, _1), this);
 
     _parent->register_mavlink_message_handler(
+        MAVLINK_MSG_ID_BATTERY_STATUS, std::bind(&TelemetryImpl::process_battery_status, this, _1), this);
+
+    _parent->register_mavlink_message_handler(
+        MAVLINK_MSG_ID_INA219, std::bind(&TelemetryImpl::process_INA219, this, _1), this);
+
+    _parent->register_mavlink_message_handler(
         MAVLINK_MSG_ID_HEARTBEAT, std::bind(&TelemetryImpl::process_heartbeat, this, _1), this);
 
     _parent->register_mavlink_message_handler(
@@ -236,6 +242,18 @@ Telemetry::Result TelemetryImpl::set_rate_battery(double rate_hz)
         _parent->set_msg_rate(MAVLINK_MSG_ID_SYS_STATUS, rate_hz));
 }
 
+Telemetry::Result TelemetryImpl::set_rate_battery_current(double rate_hz)
+{
+    return telemetry_result_from_command_result(
+        _parent->set_msg_rate(MAVLINK_MSG_ID_BATTERY_STATUS, rate_hz));
+}
+
+Telemetry::Result TelemetryImpl::set_rate_solar_power(double rate_hz)
+{
+    return telemetry_result_from_command_result(
+        _parent->set_msg_rate(MAVLINK_MSG_ID_INA219, rate_hz));
+}
+
 Telemetry::Result TelemetryImpl::set_rate_rc_status(double rate_hz)
 {
     return telemetry_result_from_command_result(
@@ -341,6 +359,22 @@ void TelemetryImpl::set_rate_battery_async(double rate_hz, Telemetry::result_cal
 {
     _parent->set_msg_rate_async(
         MAVLINK_MSG_ID_SYS_STATUS,
+        rate_hz,
+        std::bind(&TelemetryImpl::command_result_callback, std::placeholders::_1, callback));
+}
+
+void TelemetryImpl::set_rate_battery_current_async(double rate_hz, Telemetry::result_callback_t callback)
+{
+    _parent->set_msg_rate_async(
+        MAVLINK_MSG_ID_BATTERY_STATUS,
+        rate_hz,
+        std::bind(&TelemetryImpl::command_result_callback, std::placeholders::_1, callback));
+}
+
+void TelemetryImpl::set_rate_solar_power_async(double rate_hz, Telemetry::result_callback_t callback)
+{
+    _parent->set_msg_rate_async(
+        MAVLINK_MSG_ID_INA219,
         rate_hz,
         std::bind(&TelemetryImpl::command_result_callback, std::placeholders::_1, callback));
 }
@@ -613,12 +647,47 @@ void TelemetryImpl::process_sys_status(const mavlink_message_t& message)
     mavlink_msg_sys_status_decode(&message, &sys_status);
     set_battery(Telemetry::Battery(
         {sys_status.voltage_battery * 1e-3f,
+         sys_status.current_battery * 1e-2f,
          // FIXME: it is strange calling it percent when the range goes from 0 to 1.
-         sys_status.battery_remaining * 1e-2f}));
+         sys_status.battery_remaining}));
 
     if (_battery_subscription) {
         auto callback = _battery_subscription;
         auto arg = get_battery();
+        _parent->call_user_callback([callback, arg]() { callback(arg); });
+    }
+}
+
+void TelemetryImpl::process_battery_status(const mavlink_message_t& message)
+{
+    mavlink_battery_status_t battery_status;
+    mavlink_msg_battery_status_decode(&message, &battery_status);
+    set_battery_current(Telemetry::Battery_Current(
+        {battery_status.current_battery * 1e-2f
+        }));
+
+    if (_battery_current_subscription) {
+        auto callback = _battery_current_subscription;
+        auto arg = get_battery_current();
+        _parent->call_user_callback([callback, arg]() { callback(arg); });
+    }
+}
+
+void TelemetryImpl::process_INA219(const mavlink_message_t& message)
+{
+    mavlink_ina219_t solar_power;
+    mavlink_msg_ina219_decode(&message, &solar_power);
+    set_solar_power(Telemetry::Solar_Power(
+        {solar_power.voltageIn,
+         solar_power.currentIn,
+         solar_power.powerIn,
+         solar_power.voltageOut,
+         solar_power.currentOut,
+         solar_power.powerOut}));
+
+    if (_solar_power_subscription) {
+        auto callback = _solar_power_subscription;
+        auto arg = get_solar_power();
         _parent->call_user_callback([callback, arg]() { callback(arg); });
     }
 }
@@ -1071,6 +1140,30 @@ void TelemetryImpl::set_battery(Telemetry::Battery battery)
     _battery = battery;
 }
 
+Telemetry::Battery_Current TelemetryImpl::get_battery_current() const
+{
+    std::lock_guard<std::mutex> lock(_battery_current_mutex);
+    return _battery_current;
+}
+
+void TelemetryImpl::set_battery_current(Telemetry::Battery_Current battery_current)
+{
+    std::lock_guard<std::mutex> lock(_battery_current_mutex);
+    _battery_current = battery_current;
+}
+
+Telemetry::Solar_Power TelemetryImpl::get_solar_power() const
+{
+    std::lock_guard<std::mutex> lock(_solar_power_mutex);
+    return _solar_power;
+}
+
+void TelemetryImpl::set_solar_power(Telemetry::Solar_Power solar_power)
+{
+    std::lock_guard<std::mutex> lock(_solar_power_mutex);
+    _solar_power = solar_power;
+}
+
 Telemetry::FlightMode TelemetryImpl::get_flight_mode() const
 {
     std::lock_guard<std::mutex> lock(_flight_mode_mutex);
@@ -1291,6 +1384,16 @@ void TelemetryImpl::gps_info_async(Telemetry::gps_info_callback_t& callback)
 void TelemetryImpl::battery_async(Telemetry::battery_callback_t& callback)
 {
     _battery_subscription = callback;
+}
+
+void TelemetryImpl::battery_current_async(Telemetry::battery_current_callback_t& callback)
+{
+    _battery_current_subscription = callback;
+}
+
+void TelemetryImpl::solar_power_async(Telemetry::solar_power_callback_t& callback)
+{
+    _solar_power_subscription = callback;
 }
 
 void TelemetryImpl::flight_mode_async(Telemetry::flight_mode_callback_t& callback)
